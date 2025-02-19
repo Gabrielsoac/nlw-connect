@@ -4,9 +4,11 @@ import  { validatorCompiler, serializerCompiler, ZodTypeProvider, jsonSchemaTran
 import { fastifySwagger } from '@fastify/swagger';
 import { fastifySwaggerUi} from '@fastify/swagger-ui';
 import { subscribeToEventRoute } from './routes/SubscribeToEventRoute';
-
+import 'dotenv/config';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
+
+const port = Number(process.env.PORT) || 4000;
 
 app.register(
     fastifyCors,
@@ -46,7 +48,7 @@ app.get('/hello', () => {
 
 app.listen(
     {
-        port: 4000
+        port: port
     }
 ).then(
     () => {
