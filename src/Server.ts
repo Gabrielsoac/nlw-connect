@@ -1,7 +1,9 @@
 import { fastify } from 'fastify';
 import { fastifyCors } from '@fastify/cors';
+import  { validatorCompiler, serializerCompiler, ZodTypeProvider } from 'fastify-type-provider-zod';
+import { z } from 'zod';
 
-const app = fastify();
+const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.register(
     fastifyCors,
@@ -10,9 +12,36 @@ app.register(
     }
 );
 
+app.setSerializerCompiler(serializerCompiler);
+app.setValidatorCompiler(validatorCompiler);
+
 app.get('/hello', () => {
     return 'hello world'
 });
+
+app.post(
+    '/subscriptions', 
+    {
+        schema: {
+            body: z.object(
+                {
+                    name: z.string(),
+                    email: z.string().email(),
+                }
+            ),
+        }
+    },
+    (req, reply) => {
+        const {name, email} = req.body;
+
+        return reply.status(201).send(
+            {
+                name,
+                email
+            }
+        );
+    }
+)
 
 app.listen(
     {
