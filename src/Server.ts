@@ -29,9 +29,17 @@ app.post(
                     email: z.string().email(),
                 }
             ),
+            response: {
+                201: z.object(
+                    {
+                        name: z.string(),
+                        email: z.string().email()
+                    }
+                )
+            }
         }
     },
-    (req, reply) => {
+    async (req, reply) => {
         const {name, email} = req.body;
 
         return reply.status(201).send(
